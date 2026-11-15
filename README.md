@@ -1,61 +1,185 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Company Dashboard
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based company management application designed to organize users into teams, assign team managers, and manage tasks associated with individual team members.
 
-## About Laravel
+The application provides separate administrator and regular-user dashboards, with team organization and task tracking as its main functionalities.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Authentication & User Management
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- User registration and login.
+- Session-based authentication.
+- Password hashing.
+- User logout and session invalidation.
+- Administrator and regular-user roles.
+- User management, including editing and deleting accounts.
 
-## Learning Laravel
+### Role-Based Dashboards
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Administrator Dashboard**
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- View registered users.
+- View existing teams.
+- Access user management functionality.
+- Manage team creation, membership, and configuration.
+- Access task management operations.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Regular User Dashboard**
 
-## Laravel Sponsors
+- Access a personalized dashboard.
+- View teams they belong to.
+- Access team information and related tasks.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Team Management
 
-### Premium Partners
+- Create and manage teams.
+- Assign a manager to each team.
+- Add multiple users to a team.
+- Ensure the assigned manager is also a team member.
+- View team details and membership.
+- Update team information and members.
+- Delete teams.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+### Task Management
 
-## Contributing
+- Create tasks associated with team memberships.
+- Edit existing tasks.
+- Delete tasks.
+- Track task completion status.
+- Mark tasks as completed.
+- Associate tasks with specific users within their teams.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Application Architecture
 
-## Code of Conduct
+The project follows Laravel's MVC architecture.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Component | Responsibility |
+|---|---|
+| Models | Represent users, teams, and tasks and define their relationships. |
+| Controllers | Handle authentication, user management, teams, and tasks. |
+| Middleware | Protect authenticated routes and apply task-related checks. |
+| Form Requests | Validate incoming user, team, and task data. |
+| Views | Render dashboards, forms, and management pages. |
+| Database | Store users, teams, team memberships, and tasks. |
 
-## Security Vulnerabilities
+### Main Components
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- `UserController` — Authentication and user management.
+- `TeamController` — Team creation, membership, and management.
+- `TaskController` — Task creation, editing, deletion, and completion.
+- `UserMiddleware` — Restricts access to authenticated users.
+- `TaskMiddleware` — Implements additional task completion checks.
+
+## Database Relationships
+
+The application uses Laravel Eloquent relationships.
+
+```text
+User
+ |
+ +---- Has many ----> Teams (managed teams)
+ |
+ +---- Belongs to many ----> Teams
+ |                           |
+ |                           +---- team_user
+ |                                  |
+ |                                  +---- Has many ----> Tasks
+ |
+ +---- Has many ----> Tasks (through team membership)
+```
+
+**User & Team**
+- A user can manage teams.
+- A user can belong to multiple teams.
+- A team can contain multiple users.
+- Each team has an assigned manager.
+
+**Team & Task**
+- Tasks are associated with a team membership rather than directly with a team.
+- This allows tasks to be associated with a particular user within a particular team.
+
+**Task Status**
+- Tasks have a completion status represented by `isCompleted`.
+
+## Technology Stack
+
+- PHP 8.2+
+- Laravel 12
+- MySQL / SQLite (depending on environment configuration)
+- Composer
+- JavaScript
+- Vite
+- HTML / CSS
+
+## Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/ferhad00/company-dashboard.git
+cd company-dashboard
+```
+
+### 2. Install dependencies
+
+```bash
+composer install
+npm install
+```
+
+### 3. Configure environment variables
+
+```bash
+cp .env.example .env
+```
+
+Configure your database connection in `.env`.
+
+### 4. Generate application key
+
+```bash
+php artisan key:generate
+```
+
+### 5. Run database migrations
+
+```bash
+php artisan migrate
+```
+
+### 6. Start the application
+
+```bash
+php artisan serve
+```
+
+In another terminal:
+
+```bash
+npm run dev
+```
+
+Visit `http://127.0.0.1:8000` to access the application.
+
+## Development Notes
+
+This project was developed as a practical exercise in Laravel application development, focusing on:
+
+- MVC architecture.
+- Authentication and authorization.
+- Role-based dashboards.
+- Eloquent relationships.
+- Many-to-many relationships and pivot tables.
+- CRUD operations.
+- Form Request validation.
+- Middleware.
+- Team and task management.
+
+## Project Status
+
+The project is a personal development project and may contain unfinished functionality.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is currently provided for educational and development purposes.
